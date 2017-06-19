@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -12,10 +14,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class MazeAnimation extends JFrame implements Runnable {
+public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	private JPanel canvas;
 	private BoardSquare[][] maze;
 	private long msInterval;
+	private boolean exitRequested;
 	
 	public MazeAnimation(byte[][] byteMaze) {
 		setSize(Toolkit.getDefaultToolkit().getScreenSize());
@@ -24,6 +27,7 @@ public class MazeAnimation extends JFrame implements Runnable {
 		
 		canvas = new JPanel(new GridLayout(64, 64, 1, 1));
 		
+		exitRequested = false;
 		msInterval = 500l;
 		
 		maze = new BoardSquare[64][64];
@@ -48,6 +52,7 @@ public class MazeAnimation extends JFrame implements Runnable {
 		canvas.setAlignmentY(CENTER_ALIGNMENT);
 		add(canvas);
 		
+		setFocusable(true);
 		setVisible(true);
 	}
 
@@ -56,9 +61,35 @@ public class MazeAnimation extends JFrame implements Runnable {
 		LinkedList<Point> points = Maze.bfs();
 		LinkedList<Point> footprint = Maze.footprint();
 		
-		long currentTimeMillis = System.currentTimeMillis();
-		while(footprint.size() > 0) {
-			
+		Point p = null;
+		long lastTimeMillis = System.currentTimeMillis();
+		while(footprint.size() > 0 && !exitRequested) {
+			if((System.currentTimeMillis() - lastTimeMillis) >= msInterval) {
+				 p = footprint.poll();
+				 if(p != null) {
+					 maze[p.x][p.y].setColor(Color.BLUE);
+					 maze[p.x][p.y].repaint();
+					 lastTimeMillis = System.currentTimeMillis();
+				 }
+			}
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		if(arg0.getKeyCode() == KeyEvent.VK_ESCAPE)
+			exitRequested = true;
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

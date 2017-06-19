@@ -25,7 +25,7 @@ public class OptionsPanel extends JPanel {
 	private JFileChooser fileChooser;
 	
 	public OptionsPanel() {
-		setLayout(new GridLayout(3, 1, 5, 5));
+		setLayout(new GridLayout(4, 1, 5, 5));
 		setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
 		
 		loadBoardBtn = new JButton("Abrir");
@@ -79,7 +79,7 @@ public class OptionsPanel extends JPanel {
 		
 		runBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Thread thread = new Thread(new MazeAnimation());
+				Thread thread = new Thread(new MazeAnimation(MainFrame.board.toBytes()));
 				thread.run();
 			}
 		});
