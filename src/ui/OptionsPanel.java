@@ -80,7 +80,7 @@ public class OptionsPanel extends JPanel {
 		runBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Thread thread = new Thread(new MazeAnimation(MainFrame.board.toBytes()));
-				thread.run();
+				//thread.run();
 			}
 		});
 		
