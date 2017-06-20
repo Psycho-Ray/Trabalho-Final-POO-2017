@@ -80,15 +80,23 @@ public class OptionsPanel extends JPanel {
 		
 		runBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(MainFrame.board.isValidMaze()) {
+				int result = MainFrame.board.isValidMaze();
+				
+				if(result == 1) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							new MazeAnimation(MainFrame.board.toBytes());
 						}
 					});
 				}
-				else {
-					JOptionPane.showMessageDialog(null, "Verifique se o labirinto possui pelo menos 1 entra e 1 saída!",
+				else if(result == 2) {
+					JOptionPane.showMessageDialog(null, "O labirinto deve ter exatamente 1 entrada!",
+						"Labirinto Inválido",
+						JOptionPane.ERROR_MESSAGE
+					);
+				}
+				else if(result == 3) {
+					JOptionPane.showMessageDialog(null, "O labirinto deve ter pelo menos 1 saída!",
 						"Labirinto Inválido",
 						JOptionPane.ERROR_MESSAGE
 					);

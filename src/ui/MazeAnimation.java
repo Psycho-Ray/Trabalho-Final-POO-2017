@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -29,13 +28,10 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	private Thread runner;
 	
 	public MazeAnimation(byte[][] byteMaze) {
-		setSize(new Dimension(703, 703));
+		super("Animation Frame");
 		setAlwaysOnTop(true);
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
 		setLayout(new FlowLayout());
-		setUndecorated(true);
-		setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
+		setBackground(Color.BLACK);
 		
 		canvas = new JPanel(new GridLayout(64, 64, 1, 1));
 		
@@ -64,6 +60,7 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 		canvas.setAlignmentY(CENTER_ALIGNMENT);
 		canvas.setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
 		add(canvas);
+		setSize(canvas.getPreferredSize());
 		setVisible(true);
 		
 		runner = new Thread(this);
@@ -75,7 +72,26 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 		ArrayList<LinkedList<Point>> solutions;
 		
 		if(mazeObj != null) {
-			solutions = mazeObj.dfs();
+			String[] options = {
+				"Busca em largura",
+				"Busca em profundidade"
+			};
+			
+			String selectedOption = (String) JOptionPane.showInputDialog(this,
+				"Selecione o algoritmo a ser utilizado:",
+				"Algoritmo",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				options,
+				options[0]
+				);
+			
+			if(selectedOption == "Busca em largura")
+				solutions = mazeObj.bfs();
+			else if(selectedOption == "Busca em profundidade")
+				solutions = mazeObj.dfs();
+			else
+				solutions = mazeObj.dfs();
 		}
 		else {
 			JOptionPane.showMessageDialog(this, "Não foi possível executar a animação.",
@@ -102,15 +118,20 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 			
 			LinkedList<Point> sol = solutions.get(selectedSolutionIndex);
 			
-			for(Point p : sol) {
-				maze[p.x][p.y].setColor(Color.BLUE);
-				maze[p.x][p.y].repaint();
-				try {
-					Thread.sleep(msInterval);
-				} catch(InterruptedException ie) {}
+			if(sol.size() > 0) {
+				for(Point p : sol) {
+					maze[p.x][p.y].setColor(Color.BLUE);
+					maze[p.x][p.y].repaint();
+					try {
+						Thread.sleep(msInterval);
+					} catch(InterruptedException ie) {}
+				}
+				
+				JOptionPane.showMessageDialog(this, "A execução foi concluída.", "Fim", JOptionPane.INFORMATION_MESSAGE);
 			}
-			
-			JOptionPane.showMessageDialog(this, "A execução foi concluída.", "Fim", JOptionPane.INFORMATION_MESSAGE);
+			else {
+				JOptionPane.showMessageDialog(this, "Não foi possível executar a solução.", "Erro", JOptionPane.ERROR_MESSAGE);
+			}
 			dispose();
 			return;
 		}
