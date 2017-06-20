@@ -26,17 +26,19 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	private AnimationSquare[][] maze;
 	private Maze mazeObj;
 	private long msInterval;
-	private boolean exitRequested;
+	private Thread runner;
 	
 	public MazeAnimation(byte[][] byteMaze) {
-		setSize(Toolkit.getDefaultToolkit().getScreenSize());
+		setSize(new Dimension(703, 703));
+		setAlwaysOnTop(true);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
 		setLayout(new FlowLayout());
 		setUndecorated(true);
 		setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
 		
 		canvas = new JPanel(new GridLayout(64, 64, 1, 1));
 		
-		exitRequested = false;
 		msInterval = 500l;
 		mazeObj = new Maze(byteMaze);
 		
@@ -62,10 +64,12 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 		canvas.setAlignmentY(CENTER_ALIGNMENT);
 		canvas.setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
 		add(canvas);
+		setVisible(true);
 		
-		setFocusable(true);
+		runner = new Thread(this);
+		runner.start();
 	}
-
+	
 	@Override
 	public void run() {
 		ArrayList<LinkedList<Point>> solutions;
@@ -74,7 +78,7 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 			solutions = mazeObj.dfs();
 		}
 		else {
-			JOptionPane.showMessageDialog(null, "Não foi possível executar a animação.",
+			JOptionPane.showMessageDialog(this, "Não foi possível executar a animação.",
 				"Erro", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -86,7 +90,7 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 				options.add(Integer.toString(i + 1));
 			}
 			Object[] optionsStrings = options.toArray();
-			String result = (String) JOptionPane.showInputDialog(null,
+			String result = (String) JOptionPane.showInputDialog(this,
 				"Select the solution you want to run:",
 				"Options",
 				JOptionPane.QUESTION_MESSAGE,
@@ -98,38 +102,26 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 			
 			LinkedList<Point> sol = solutions.get(selectedSolutionIndex);
 			
-			setVisible(true);
-			
 			for(Point p : sol) {
 				maze[p.x][p.y].setColor(Color.BLUE);
 				maze[p.x][p.y].repaint();
-				canvas.repaint();
 				try {
 					Thread.sleep(msInterval);
-				} catch (InterruptedException e) {
-					JOptionPane.showMessageDialog(null, "Ocorreu um erro durante a animação.", "Erro", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+				} catch(InterruptedException ie) {}
 			}
 			
-			JOptionPane.showMessageDialog(null, "Pressione a tecla ESC para voltar fechar a animação.", "Info", JOptionPane.INFORMATION_MESSAGE);
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-			}
+			JOptionPane.showMessageDialog(this, "A execução foi concluída.", "Fim", JOptionPane.INFORMATION_MESSAGE);
 			dispose();
 			return;
 		}
 		else {
-			JOptionPane.showMessageDialog(null, "Não foi encontrada nenhuma solução para o labirinto.", "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Não foi encontrada nenhuma solução para o labirinto.", "Erro", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		if(arg0.getKeyCode() == KeyEvent.VK_ESCAPE)
-			exitRequested = true;
 	}
 
 	@Override

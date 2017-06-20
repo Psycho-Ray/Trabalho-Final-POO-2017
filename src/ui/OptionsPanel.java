@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -80,9 +81,11 @@ public class OptionsPanel extends JPanel {
 		runBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(MainFrame.board.isValidMaze()) {
-					MazeAnimation animation = new MazeAnimation(MainFrame.board.toBytes());
-					Thread thread = new Thread(animation);
-					thread.run();
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							new MazeAnimation(MainFrame.board.toBytes());
+						}
+					});
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Verifique se o labirinto possui pelo menos 1 entra e 1 saída!",
