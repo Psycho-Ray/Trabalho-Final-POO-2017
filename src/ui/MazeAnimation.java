@@ -30,6 +30,7 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	private Maze mazeObj;
 	private long msInterval;
 	private Thread runner;
+	private byte[][] mazeByte;
 	
 	/**Construtor da classe MazeAnimation.
 	 * @param byteMaze Matriz bidimensional de bytes de tamanho 64x64 sumarizando 
@@ -45,6 +46,8 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 		
 		msInterval = 500l;
 		mazeObj = new Maze(byteMaze);
+		
+		mazeByte = byteMaze;
 		
 		maze = new AnimationSquare[64][64];
 		for(int i = 0; i < 64; i++) {
@@ -78,6 +81,7 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	@Override
 	public void run() {
 		ArrayList<LinkedList<Point>> solutions;
+		LinkedList<Point> footprint;
 		
 		if(mazeObj != null) {
 			String[] options = {
@@ -100,12 +104,44 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 				solutions = mazeObj.dfs();
 			else
 				solutions = mazeObj.dfs();
+			footprint = mazeObj.showFootPrint();
 		}
 		else {
 			JOptionPane.showMessageDialog(this, "Não foi possível executar a animação.",
 				"Erro", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+		
+		msInterval = (long) (30000l / footprint.size());
+		if(msInterval > 250)
+			msInterval = 250;
+		
+		for(Point p : footprint) {
+			if(p != null) {
+				if(maze[p.x][p.y].getColor() == Color.BLUE)
+					maze[p.x][p.y].setColor(Color.GRAY);
+				else
+					maze[p.x][p.y].setColor(Color.BLUE);
+				maze[p.x][p.y].repaint();
+				try {
+					Thread.sleep(msInterval);
+				} catch(InterruptedException ie) {}
+			}
+		}
+		
+		for(int i = 0; i < 64; i++) {
+			for(int j = 0; j < 64; j++) {
+				if(mazeByte[i][j] == 0)
+					maze[i][j].setColor(Color.WHITE);
+				else if(mazeByte[i][j] == 1)
+					maze[i][j].setColor(Color.BLACK);
+				else if(mazeByte[i][j] == 2)
+					maze[i][j].setColor(Color.RED);
+				else if(mazeByte[i][j] == 3)
+					maze[i][j].setColor(Color.GREEN);
+			}
+		}
+		canvas.repaint();
 		
 		if(solutions.size() > 0) {
 			Vector<String> options = new Vector<String>();
@@ -132,7 +168,9 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 					maze[p.x][p.y].repaint();
 					try {
 						Thread.sleep(msInterval);
-					} catch(InterruptedException ie) {}
+					} catch(InterruptedException ie) {
+						System.out.println("Sleep exception");
+					}
 				}
 				
 				JOptionPane.showMessageDialog(this, "A execução foi concluída.", "Fim", JOptionPane.INFORMATION_MESSAGE);
