@@ -48,7 +48,7 @@ public class PathFinder {
 		if (x>0 && source[x-1][y] != 1 && !used[x-1][y]) dfsRun(x-1, y);	//Esquerda
 		if (y+1 < source[x].length && source[x][y+1] != 1 && !used[x][y+1]) dfsRun(x, y+1);	//Baixo
 		if (x+1 < source.length && source[x+1][y] != 1 && !used[x+1][y])	dfsRun(x+1, y);	//Direita
-		if (y>0 && source[x][y-1] != 1 && !used[x][y-1]) dfsRun(x, y+1);	//Cima
+		if (y>0 && source[x][y-1] != 1 && !used[x][y-1]) dfsRun(x, y-1);	//Cima
 		
 		//Remove a posição atual da lista e pinta a posição atual de cinza
 		auxPath.remove();
@@ -97,7 +97,6 @@ public class PathFinder {
 		//Inicialização
 		footPrint = new LinkedList<Point>();
 		paths = new ArrayList<LinkedList<Point>>(nExits);
-		LinkedList<Point> queue = new LinkedList<Point>();
 		
 		//Inicialização
 		used = new boolean[source.length][];
@@ -106,6 +105,9 @@ public class PathFinder {
 		//Inicialização
 		parent = new Point[source.length][];
 		for (int i=0; i<source.length; i++) parent[i] = new Point[source[i].length];
+		
+		//Queue
+		LinkedList<Point> queue = new LinkedList<Point>();
 		
 		//Adiciona a entrada
 		used[entrance.x][entrance.y] = true;
@@ -178,12 +180,16 @@ public class PathFinder {
 		footPrint = new LinkedList<Point>();
 		auxPath = new LinkedList<Point>();
 		
+		//Inicialização
 		used = new boolean[source.length][];
 		for (int i=0; i<source.length; i++) used[i] = new boolean[source[i].length];
 		
+		//Inicialização
+		parent = new Point[source.length][];
+		for (int i=0; i<source.length; i++) parent[i] = new Point[source[i].length];
+		
 		//Set Ordenado implementado com Rubro-Negra para a lista de nós e matriz de adjacência
 		TreeSet<StarCell> set = new TreeSet<StarCell>();
-		parent = new Point[source.length][];
 		
 		//Adiciona a entrada ao set
 		set.add(new StarCell(entrance, 0, exit));
