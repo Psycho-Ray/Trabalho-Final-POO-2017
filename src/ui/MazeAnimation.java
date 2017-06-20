@@ -97,25 +97,27 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 			selectedSolutionIndex = Integer.parseInt(result) - 1;
 			
 			LinkedList<Point> sol = solutions.get(selectedSolutionIndex);
-			long lastTimeMillis = System.currentTimeMillis();
 			
 			setVisible(true);
 			
 			for(Point p : sol) {
-				if((System.currentTimeMillis() - lastTimeMillis) >= msInterval) {
-					maze[p.y][p.x].setColor(Color.BLUE);
-					maze[p.y][p.x].repaint();
-					try {
-						Thread.sleep(msInterval);
-					} catch (InterruptedException e) {
-						JOptionPane.showMessageDialog(null, "Ocorreu um erro durante a animação.", "Erro", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
+				maze[p.x][p.y].setColor(Color.BLUE);
+				maze[p.x][p.y].repaint();
+				canvas.repaint();
+				try {
+					Thread.sleep(msInterval);
+				} catch (InterruptedException e) {
+					JOptionPane.showMessageDialog(null, "Ocorreu um erro durante a animação.", "Erro", JOptionPane.ERROR_MESSAGE);
+					return;
 				}
 			}
 			
 			JOptionPane.showMessageDialog(null, "Pressione a tecla ESC para voltar fechar a animação.", "Info", JOptionPane.INFORMATION_MESSAGE);
-			while(!exitRequested) {}
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+			}
+			dispose();
 			return;
 		}
 		else {
