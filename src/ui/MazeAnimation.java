@@ -15,12 +15,16 @@ import java.util.Vector;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import maze.Maze;
 
 @SuppressWarnings("serial")
 public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	private JPanel canvas;
 	private AnimationSquare[][] maze;
+	private Maze mazeObj;
 	private long msInterval;
 	private boolean exitRequested;
 	
@@ -34,6 +38,7 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 		
 		exitRequested = false;
 		msInterval = 500l;
+		mazeObj = new Maze(byteMaze);
 		
 		maze = new AnimationSquare[64][64];
 		for(int i = 0; i < 64; i++) {
@@ -59,25 +64,58 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 		add(canvas);
 		
 		setFocusable(true);
-		setVisible(true);
 	}
 
 	@Override
 	public void run() {
-		LinkedList<Point> points = Maze.bfs();
-		LinkedList<Point> footprint = Maze.footprint();
+		ArrayList<LinkedList<Point>> solutions;
 		
-		Point p = null;
-		long lastTimeMillis = System.currentTimeMillis();
-		while(footprint.size() > 0 && !exitRequested) {
-			if((System.currentTimeMillis() - lastTimeMillis) >= msInterval) {
-				 p = footprint.poll();
-				 if(p != null) {
-					 maze[p.x][p.y].setColor(Color.BLUE);
-					 maze[p.x][p.y].repaint();
-					 lastTimeMillis = System.currentTimeMillis();
-				 }
+		if(mazeObj != null) {
+			solutions = mazeObj.dfs();
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Não foi possível executar a animação.",
+				"Erro", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		if(solutions.size() > 0) {
+			Vector<String> options = new Vector<String>();
+			int selectedSolutionIndex = -1;
+			for(int i = 0; i < solutions.size(); i++) {
+				options.add(Integer.toString(i + 1));
 			}
+			Object[] optionsStrings = options.toArray();
+			String result = (String) JOptionPane.showInputDialog(null,
+				"Select the solution you want to run:",
+				"Options",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				optionsStrings,
+				optionsStrings[0]
+				);
+			selectedSolutionIndex = Integer.parseInt(result) - 1;
+			
+			LinkedList<Point> sol = solutions.get(selectedSolutionIndex);
+			long lastTimeMillis = System.currentTimeMillis();
+			
+			setVisible(true);
+			
+			for(Point p : sol) {
+				if((System.currentTimeMillis() - lastTimeMillis) >= msInterval) {
+					maze[p.y][p.x].setColor(Color.BLUE);
+					maze[p.y][p.x].repaint();
+					lastTimeMillis = System.currentTimeMillis();
+				}
+			}
+			
+			JOptionPane.showMessageDialog(null, "Pressione a tecla ESC para voltar fechar a animação.", "Info", JOptionPane.INFORMATION_MESSAGE);
+			while(!exitRequested) {}
+			return;
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Não foi encontrada nenhuma solução para o labirinto.", "Erro", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 	}
 

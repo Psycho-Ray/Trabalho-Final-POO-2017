@@ -173,4 +173,22 @@ public class Board extends JPanel {
 		}
 		return bytes;
 	}
+	
+	public boolean isValidMaze() {
+		int entrances = 0, exits = 0;
+		
+		for(int i = 0; i < 64; i++) {
+			for(int j = 0; j < 64; j++) {
+				if(board[i][j].getColor() == Color.RED)
+					entrances++;
+				else if(board[i][j].getColor() == Color.GREEN)
+					exits++;
+			}
+		}
+		
+		if(entrances != 1 || exits < 1)
+			return false;
+		
+		return true;
+	}
 }

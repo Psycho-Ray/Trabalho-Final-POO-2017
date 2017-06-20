@@ -79,8 +79,16 @@ public class OptionsPanel extends JPanel {
 		
 		runBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Thread thread = new Thread(new MazeAnimation(MainFrame.board.toBytes()));
-				//thread.run();
+				if(MainFrame.board.isValidMaze()) {
+					Thread thread = new Thread(new MazeAnimation(MainFrame.board.toBytes()));
+					thread.run();
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Verifique se o labirinto possui pelo menos 1 entra e 1 saída!",
+						"Labirinto Inválido",
+						JOptionPane.ERROR_MESSAGE
+					);
+				}
 			}
 		});
 		
