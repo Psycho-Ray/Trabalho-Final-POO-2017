@@ -143,7 +143,7 @@ public class PathFinder {
 			
 			//Baixo
 			if (now.y < source.length && source[now.x][now.y + 1] != 1 && !used[now.x][now.y + 1]) {
-				next = new Point(now.x - 1, now.y);
+				next = new Point(now.x, now.y + 1);
 				bfsMark(queue, now, next);
 			}
 			
@@ -201,7 +201,8 @@ public class PathFinder {
 			//Salva o nó atual e o tira do set
 			StarCell next = null, now = set.pollFirst();
 			
-			//Pinta o nó de cinza
+			//Marca-o como visitado e pinta-o de cinza
+			used[now.x][now.y] = true;
 			footPrint.add(now.point());
 			
 			//Para cada posição adjacente...
