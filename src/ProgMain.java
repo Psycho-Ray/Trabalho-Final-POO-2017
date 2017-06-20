@@ -3,7 +3,14 @@ import javax.swing.JOptionPane;
 
 import ui.MainFrame;
 
+/**Classe principal da aplicação.
+ * @author Igor Trevelin
+ *
+ */
 public class ProgMain {
+	/**Função main da aplicação, onde se inicia a execução do programa.
+	 * @param args Array de Strings com os argumento passados para o programa.
+	 */
 	public static void main(String[] args) {
 		MainFrame mainFrame = new MainFrame("Trabalho Final POO 2017");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

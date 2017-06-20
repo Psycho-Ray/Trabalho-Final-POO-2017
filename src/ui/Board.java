@@ -174,7 +174,13 @@ public class Board extends JPanel {
 		return bytes;
 	}
 	
-	public boolean isValidMaze() {
+	/**Verifica se o labirinto desenhado no quadro é válido.
+	 * @return Número inteiro onde:
+	 * 1: labirinto válido
+	 * 2: número de entradas inválido
+	 * 3: número de saídas inválido
+	 */
+	public int isValidMaze() {
 		int entrances = 0, exits = 0;
 		
 		for(int i = 0; i < 64; i++) {
@@ -186,9 +192,12 @@ public class Board extends JPanel {
 			}
 		}
 		
-		if(entrances != 1 || exits < 1)
-			return false;
+		if(entrances != 1)
+			return 2;
 		
-		return true;
+		if(exits < 1)
+			return 3;
+		
+		return 1;
 	}
 }
