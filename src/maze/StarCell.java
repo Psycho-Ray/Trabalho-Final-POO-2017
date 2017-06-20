@@ -50,6 +50,9 @@ public class StarCell implements Comparable<StarCell>{
 	
 	@Override
 	public int compareTo(StarCell aux) {
-		return this.t - aux.t;
+		//Maior = Maior t, ou maior x, ou maior y, nessa ordem.
+		if (this.t != aux.t) return this.t - aux.t;
+		if (this.x != aux.x) return this.x - aux.x;
+		return this.y - aux.y;
 	}
 }
