@@ -12,6 +12,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**Representa a paleta de cores.
+ * @author Igor Trevelin
+ *
+ */
 @SuppressWarnings("serial")
 public class ColorPalette extends JPanel {
 	private ColorSelector[] colorSelectors;
@@ -19,6 +23,9 @@ public class ColorPalette extends JPanel {
 	private JLabel selectColorLabel;
 	private JLabel selectedColorLabel;
 	
+	/**Construtor da classe ColorPalette.
+	 * 
+	 */
 	public ColorPalette() {
 		setLayout(new GridLayout(7, 1, 5, 5));
 		setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
@@ -46,30 +53,49 @@ public class ColorPalette extends JPanel {
 		add(colorSelectors[4]);
 	}
 	
+	/**Altera a cor de pintura.
+	 * @param color Objeto do tipo Color.
+	 */
 	public void setSelectedColor(Color color) {
 		colorSelectors[4].setColor(color);
 		colorSelectors[4].repaint();
 	}
 	
+	/**Retorna a cor de pintura selecionada.
+	 * @return Objeto do tipo Color.
+	 */
 	public Color getSelectedColor() {
 		return colorSelectors[4].getColor();
 	}
 }
 
+/**Representa um seletor para uma cor que pode ser selecionada na paleta de cores.
+ * @author Igor Trevelin
+ *
+ */
 @SuppressWarnings("serial")
 class ColorSelector extends JComponent implements MouseListener {
 	private Color color;
 	
+	/**Construtor da classe ColorSelector.
+	 * @param color Objeto do tipo Color.
+	 */
 	ColorSelector(Color color) {
 		this.color = color;
 		setPreferredSize(new Dimension(20, 20));
 		addMouseListener(this);
 	}
 	
+	/**Retorna a cor do seletor.
+	 * @return Objeto do tipo Color.
+	 */
 	public Color getColor() {
 		return color;
 	}
 	
+	/**Altera a cor do seletor.
+	 * @param color Objeto do tipo Color.
+	 */
 	public void setColor(Color color) {
 		this.color = color;
 	}

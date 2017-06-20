@@ -19,6 +19,10 @@ import javax.swing.JPanel;
 
 import maze.Maze;
 
+/**Representa a janela onde será executada a animação do algoritmo de resolução do labirinto.
+ * @author Igor Trevelin
+ *
+ */
 @SuppressWarnings("serial")
 public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	private JPanel canvas;
@@ -27,6 +31,10 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	private long msInterval;
 	private Thread runner;
 	
+	/**Construtor da classe MazeAnimation.
+	 * @param byteMaze Matriz bidimensional de bytes de tamanho 64x64 sumarizando 
+	 * o labirinto de entrada. 
+	 */
 	public MazeAnimation(byte[][] byteMaze) {
 		super("Animation Frame");
 		setAlwaysOnTop(true);
@@ -152,22 +160,34 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	public void keyTyped(KeyEvent arg0) {}
 }
 
+/**Representa um quadrado da animação do labirinto.
+ * @author Igor Trevelin
+ *
+ */
 @SuppressWarnings("serial")
 class AnimationSquare extends JComponent {
 	private Color color;
 	
+	/**Construtor da classe AnimationSquare
+	 * 
+	 */
 	public AnimationSquare() {
 		this.color = Color.WHITE;
 		setPreferredSize(new Dimension(10, 10));
 	}
 	
+	/**Retorna a cor do quadrado.
+	 * @return Objeto do tipo Color.
+	 */
 	public Color getColor() {
 		return color;
 	}
 	
+	/**Altera a cor do quadrado.
+	 * @param color Nova cor do quadrado.
+	 */
 	public void setColor(Color color) {
 		this.color = color;
-		repaint();
 	}
 	
 	@Override

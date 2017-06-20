@@ -25,6 +25,9 @@ public class OptionsPanel extends JPanel {
 	private JButton runBtn;
 	private JFileChooser fileChooser;
 	
+	/**Construtor da classe OptionsPanel.
+	 * 
+	 */
 	public OptionsPanel() {
 		setLayout(new GridLayout(4, 1, 5, 5));
 		setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
