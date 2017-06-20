@@ -109,7 +109,7 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 						Thread.sleep(msInterval);
 					} catch (InterruptedException e) {
 						JOptionPane.showMessageDialog(null, "Ocorreu um erro durante a animação.", "Erro", JOptionPane.ERROR_MESSAGE);
-						e.printStackTrace();
+						return;
 					}
 				}
 			}
