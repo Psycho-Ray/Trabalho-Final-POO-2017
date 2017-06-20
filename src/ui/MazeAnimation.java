@@ -105,7 +105,12 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 				if((System.currentTimeMillis() - lastTimeMillis) >= msInterval) {
 					maze[p.y][p.x].setColor(Color.BLUE);
 					maze[p.y][p.x].repaint();
-					lastTimeMillis = System.currentTimeMillis();
+					try {
+						Thread.sleep(msInterval);
+					} catch (InterruptedException e) {
+						JOptionPane.showMessageDialog(null, "Ocorreu um erro durante a animação.", "Erro", JOptionPane.ERROR_MESSAGE);
+						e.printStackTrace();
+					}
 				}
 			}
 			
@@ -147,6 +152,7 @@ class AnimationSquare extends JComponent {
 	
 	public void setColor(Color color) {
 		this.color = color;
+		repaint();
 	}
 	
 	@Override

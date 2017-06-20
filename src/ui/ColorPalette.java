@@ -32,6 +32,7 @@ public class ColorPalette extends JPanel {
 		colorSelectors[4] = new ColorSelector(Color.BLACK);
 		
 		selectColorLabel = new JLabel("Paleta de Cores");
+		selectColorLabel.setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
 		add(selectColorLabel);
 		
 		for(int i = 0; i < 4; i++) {
@@ -39,6 +40,7 @@ public class ColorPalette extends JPanel {
 		}
 		
 		selectedColorLabel = new JLabel("Cor Selecionada");
+		selectedColorLabel.setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
 		add(selectedColorLabel);
 		
 		add(colorSelectors[4]);
@@ -46,6 +48,7 @@ public class ColorPalette extends JPanel {
 	
 	public void setSelectedColor(Color color) {
 		colorSelectors[4].setColor(color);
+		colorSelectors[4].repaint();
 	}
 	
 	public Color getSelectedColor() {
@@ -83,7 +86,6 @@ class ColorSelector extends JComponent implements MouseListener {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		MainFrame.colorPalette.setSelectedColor(color);
-		MainFrame.colorPalette.repaint();
 	}
 
 	@Override
