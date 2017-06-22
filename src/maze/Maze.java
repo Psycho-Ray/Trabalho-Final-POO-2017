@@ -34,7 +34,6 @@ public class Maze {
 		
 		//Caso entrada ou saída não encontrada
 		//if (entrance == null) ADICIONAR EXCESSÃO LABIRINTO SEM ENTRADA
-		//if (exits.size() == 0) ADICIONAR EXCESSÃO LABIRINTO SEM SAÍDA
 	}
 	
 	public ArrayList<LinkedList<Point>> dfs() {
@@ -49,9 +48,18 @@ public class Maze {
 		//Vetor dos caminhos até cada saída
 		ArrayList<LinkedList<Point>> paths = new ArrayList<LinkedList<Point>>(exits.size());
 		
+		//Inicializa o vetor footPrint
+		LinkedList<Point> footPrint = new LinkedList<Point>();
+		
 		//Encontra cada saída...
-		for (Point exit : exits)
-			paths.add(solver.AStar(source, entrance, exit));
+		for (Point exit : exits) {
+			//Procura um caminho
+			LinkedList<Point> auxPath = solver.AStar(source, footPrint, entrance, exit);
+			
+			//Se exitir, adiciona aos caminhos conhecidos
+			//if (auxPath == null) throws exception;
+			/*else */if (auxPath != null) paths.add(auxPath);
+		}
 		
 		return paths;
 	}

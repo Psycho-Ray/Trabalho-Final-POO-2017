@@ -6,53 +6,65 @@ public class StarCell implements Comparable<StarCell>{
 	public int x,y,d,t;
 	private Point p;
 	
+	public StarCell(int x, int y) {
+		this.x = x;
+		this.y = y;
+		this.d = 0;
+		this.t = Integer.MAX_VALUE;
+	}
+	
 	public StarCell(int x, int y, Point goal) {
 		this.x = x;
 		this.y = y;
 		this.d = 0;
-		this.t = update(goal);
+		this.t = d + ManhattanDistance(goal);
 	}
 	
 	public StarCell(int x, int y, int d, Point goal) {
 		this.x = x;
 		this.y = y;
 		this.d = d;
-		this.t = update(goal);
+		this.t = d + ManhattanDistance(goal);
 	}
 	
 	public StarCell(Point p, int d, Point goal) {
 		this.x = p.x;
 		this.y = p.y;
 		this.d = d;
-		this.t = update(goal);
+		this.d = d + ManhattanDistance(goal);
 	}
 	
 	public StarCell(StarCell aux, Point goal) {
 		this.x = aux.x;
 		this.y = aux.y;
 		this.d = aux.d;
-		this.t = update(goal);
+		this.d = d + ManhattanDistance(goal);
 	}
 	
 	public Point point() {
-		return (p == null) ? new Point(this.x, this.y) : p;
+		if (p == null) p = new Point(this.x, this.y);
+		return p;
 	}
 	
 	//Retorna a distância até o ponto destino
 	private int ManhattanDistance(Point goal) {
-		return Math.abs(goal.x - this.x) + Math.abs(goal.y - this.x);
+		return Math.abs(goal.x - this.x) + Math.abs(goal.y - this.y);
 	}
 	
-	//Retorna a distância total utilizada para o algoritmo A*
-	public int update(Point goal) {
-		return d + ManhattanDistance(goal);
+	public int nextT(int dIncrement, Point goal) {
+		return d + dIncrement + ManhattanDistance(goal);
+	}
+	
+	public void update(int dIncrement, Point goal) {
+		this.d += dIncrement;
+		this.t = this.d + ManhattanDistance(goal);
 	}
 	
 	@Override
 	public int compareTo(StarCell aux) {
-		//Maior = Maior t, ou maior x, ou maior y, nessa ordem.
+		//Maior = Maior t, ou menor y, ou menor x, nessa ordem.
 		if (this.t != aux.t) return this.t - aux.t;
-		if (this.x != aux.x) return this.x - aux.x;
-		return this.y - aux.y;
+		if (this.y != aux.y) return - (this.y - aux.y);
+		return - (this.x - aux.x);
 	}
 }
