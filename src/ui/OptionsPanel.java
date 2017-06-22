@@ -8,7 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -50,8 +49,9 @@ public class OptionsPanel extends JPanel {
 				
 				int result = fileChooser.showOpenDialog(MainFrame.optionsPanel);	
 				if(result == JFileChooser.APPROVE_OPTION) {
+					MainFrame.board.clear();
 					if(!MainFrame.board.loadBoardFromFile(fileChooser.getSelectedFile())) {
-						JOptionPane.showMessageDialog(null, "N�o foi poss�vel carregar o arquivo!",
+						JOptionPane.showMessageDialog(null, "Não foi possível carregar o arquivo!",
 								"Erro", JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -69,7 +69,7 @@ public class OptionsPanel extends JPanel {
 					if(!str.endsWith(".lab"))
 						str = str.concat(".lab");
 					if(!MainFrame.board.saveBoardToFile(str)) {
-						JOptionPane.showMessageDialog(null, "N�o foi poss�vel salvar o labirinto!",
+						JOptionPane.showMessageDialog(null, "Não foi possível salvar o labirinto!",
 								"Erro", JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -87,11 +87,7 @@ public class OptionsPanel extends JPanel {
 				int result = MainFrame.board.isValidMaze();
 				
 				if(result == 1) {
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							new MazeAnimation(MainFrame.board.toBytes());
-						}
-					});
+					new Thread(MainFrame.board).start();
 				}
 				else if(result == 2) {
 					JOptionPane.showMessageDialog(null, "O labirinto deve ter exatamente 1 entrada!",
