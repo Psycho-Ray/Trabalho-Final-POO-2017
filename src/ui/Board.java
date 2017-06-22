@@ -3,8 +3,6 @@ package ui;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.GridLayout;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -14,14 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import maze.Maze;
-
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /** Representa o quadro onde o usuário desenha o labirinto.
  * @author Igor Trevelin
@@ -29,11 +21,8 @@ import java.util.LinkedList;
  * @author Rodrigo Anes
  */
 @SuppressWarnings("serial")
-public class Board extends JPanel implements Runnable {
+public class Board extends JPanel {
 	private BoardSquare[][] board;
-	private Maze mazeObj;
-	private long msInterval;
-	private byte[][] mazeByte;
 	
 	/**Construtor da classe Board
 	 * 
@@ -165,22 +154,6 @@ public class Board extends JPanel implements Runnable {
 		repaint();
 	}
 	
-	public void reset() {
-		for(int i = 0; i < 64; i++) {
-			for(int j = 0; j < 64; j++) {
-				if(mazeByte[i][j] == 0)
-					board[i][j].setColor(Color.WHITE);
-				else if(mazeByte[i][j] == 1)
-					board[i][j].setColor(Color.BLACK);
-				else if(mazeByte[i][j] == 2)
-					board[i][j].setColor(Color.RED);
-				else if(mazeByte[i][j] == 3)
-					board[i][j].setColor(Color.GREEN);
-			}
-		}
-		repaint();
-	}
-	
 	/**Retorna uma matriz bidimensional de bytes de tamanho 64x64 contendo
 	 * uma sumarização do labirinto desenhado.
 	 * @return Matriz bidimensional do tipo byte[][]
@@ -209,139 +182,23 @@ public class Board extends JPanel implements Runnable {
 	 * 3: número de saídas inválido
 	 */
 	public int isValidMaze() {
-		int entrances = 0, exits = 0;
+		int entrances = 0/*, exits = 0*/;
 		
 		for(int i = 0; i < 64; i++) {
 			for(int j = 0; j < 64; j++) {
 				if(board[i][j].getColor() == Color.RED)
 					entrances++;
-				else if(board[i][j].getColor() == Color.GREEN)
-					exits++;
+				/*else if(board[i][j].getColor() == Color.GREEN)
+					exits++;*/
 			}
 		}
 		
 		if(entrances != 1)
 			return 2;
 		
-		if(exits < 1)
-			return 3;
+		/*if(exits < 1)
+			return 3;*/
 		
 		return 1;
-	}
-	
-	@Override
-	public void run() {
-		ArrayList<LinkedList<Point>> solutions;
-		LinkedList<Point> footprint;
-		String selectedOption;
-		
-		mazeByte = toBytes();
-		mazeObj = new Maze(mazeByte);
-		
-		if(mazeObj != null) {
-			String[] options = {
-				"Busca em largura",
-				"Busca em profundidade",
-				"A*"
-			};
-			
-			selectedOption = (String) JOptionPane.showInputDialog(this,
-				"Selecione o algoritmo a ser utilizado:",
-				"Algoritmo",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				options,
-				options[0]
-				);
-			
-			if(selectedOption == "Busca em largura")
-				solutions = mazeObj.bfs();
-			else if(selectedOption == "Busca em profundidade")
-				solutions = mazeObj.dfs();
-			else if(selectedOption == "A*")
-				solutions = mazeObj.AStar();
-			else solutions = mazeObj.bfs();
-			footprint = mazeObj.showFootPrint();
-		}
-		else {
-			JOptionPane.showMessageDialog(this, "Não foi possível executar a animação.",
-				"Erro", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		
-			msInterval = (15000l / footprint.size());
-			if(msInterval > 250l)
-				msInterval = 250l;
-		
-		for(Point p : footprint) {
-			if(p != null) {
-				if(board[p.x][p.y].getColor() == Color.BLUE)
-					board[p.x][p.y].setColor(Color.GRAY);
-				else
-					board[p.x][p.y].setColor(Color.BLUE);
-				board[p.x][p.y].repaint();
-				Toolkit.getDefaultToolkit().sync();
-				try {
-					Thread.sleep(msInterval);
-				} catch(InterruptedException ie) {}
-			}
-			else {
-				if(selectedOption == "A*") {
-					reset();
-				}
-			}
-		}
-		
-		reset();
-		
-		if(solutions.size() > 0) {
-			Vector<String> options = new Vector<String>();
-			int selectedSolutionIndex = -1;
-			for(int i = 0; i < solutions.size(); i++) {
-				options.add(Integer.toString(i + 1));
-			}
-			Object[] optionsStrings = options.toArray();
-			String result = (String) JOptionPane.showInputDialog(this,
-				"Select the solution you want to run:",
-				"Options",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				optionsStrings,
-				optionsStrings[0]
-				);
-			try {
-				selectedSolutionIndex = Integer.parseInt(result) - 1;
-			} catch(NumberFormatException nfe) {
-				return;
-			}
-			
-			LinkedList<Point> sol = solutions.get(selectedSolutionIndex);
-			
-			if(sol.size() > 0) {
-				msInterval = (5000l / sol.size());
-				if(msInterval > 250l)
-					msInterval = 250l;
-				
-				for(Point p : sol) {
-					board[p.x][p.y].setColor(Color.BLUE);
-					board[p.x][p.y].repaint();
-					Toolkit.getDefaultToolkit().sync();
-					try {
-						Thread.sleep(msInterval);
-					} catch(InterruptedException ie) {}
-				}
-				
-				JOptionPane.showMessageDialog(this, "A execução foi concluída.", "Fim", JOptionPane.INFORMATION_MESSAGE);
-				reset();
-			}
-			else {
-				JOptionPane.showMessageDialog(this, "Não foi possível executar a solução.", "Erro", JOptionPane.ERROR_MESSAGE);
-			}
-			return;
-		}
-		else {
-			JOptionPane.showMessageDialog(this, "Não foi encontrada nenhuma solução para o labirinto.", "Erro", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
 	}
 }
