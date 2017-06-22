@@ -269,9 +269,7 @@ public class Board extends JPanel implements Runnable {
 			return;
 		}
 		
-		msInterval = (long) (30000l / footprint.size());
-		if(msInterval > 250)
-			msInterval = 250;
+			msInterval = 100l;
 		
 		for(Point p : footprint) {
 			if(p != null) {
