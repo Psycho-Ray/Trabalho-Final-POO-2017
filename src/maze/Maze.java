@@ -28,7 +28,7 @@ public class Maze {
 				}
 				
 				//Adiciona a saída à lista de saídas conhecidas
-				else if (source[i][i] == 3) exits.add(new Point(i, j));
+				else if (source[i][j] == 3) exits.add(new Point(i, j));
 			}
 		}
 		
@@ -43,6 +43,17 @@ public class Maze {
 	
 	public ArrayList<LinkedList<Point>> bfs() {
 		return solver.bfs(entrance, exits.size());
+	}
+	
+	public ArrayList<LinkedList<Point>> AStar() {
+		//Vetor dos caminhos até cada saída
+		ArrayList<LinkedList<Point>> paths = new ArrayList<LinkedList<Point>>(exits.size());
+		
+		//Encontra cada saída...
+		for (Point exit : exits)
+			paths.add(solver.AStar(source, entrance, exit));
+		
+		return paths;
 	}
 	
 	public LinkedList<Point> showFootPrint() {
