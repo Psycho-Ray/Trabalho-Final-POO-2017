@@ -170,7 +170,11 @@ public class PathFinder {
 	
 	/* A* */
 	public LinkedList<Point> AStar(byte[][] source, Point entrance, Point exit) {
+<<<<<<< HEAD
 		//Inicializaï¿½ï¿½o
+=======
+		//Inicialização
+>>>>>>> ee3ee1c1cb5dc8a9d77ed184521926949a0dacbd
 		footPrint = new LinkedList<Point>();
 		auxPath = new LinkedList<Point>();
 		
@@ -199,9 +203,15 @@ public class PathFinder {
 			used[now.x][now.y] = true;
 			footPrint.add(now.point());
 			
+<<<<<<< HEAD
 			///Caso saï¿½da encontrada
 			if (source[now.x][now.y] == 3) {
 				//Armazena o caminho atï¿½ a saï¿½da
+=======
+			///Caso saída encontrada
+			if (source[now.x][now.y] == 3) {
+				//Armazena o caminho até a saída
+>>>>>>> ee3ee1c1cb5dc8a9d77ed184521926949a0dacbd
 				extractFromParent(auxPath, parent, now.point());
 				
 				//Exibe o caminho encontrado
@@ -209,7 +219,11 @@ public class PathFinder {
 				return auxPath;
 			}
 			
+<<<<<<< HEAD
 			//Para cada posiï¿½ï¿½o adjacente...
+=======
+			//Para cada posição adjacente...
+>>>>>>> ee3ee1c1cb5dc8a9d77ed184521926949a0dacbd
 			//Esquerda
 			if (now.x > 0 && source[now.x - 1][now.y] != 1 && !used[now.x - 1][now.y]) {
 				next = new StarCell(now.x - 1, now.y, now.d + 1, exit);
