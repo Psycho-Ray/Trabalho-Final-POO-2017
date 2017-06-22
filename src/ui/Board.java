@@ -182,22 +182,22 @@ public class Board extends JPanel {
 	 * 3: número de saídas inválido
 	 */
 	public int isValidMaze() {
-		int entrances = 0, exits = 0;
+		int entrances = 0/*, exits = 0*/;
 		
 		for(int i = 0; i < 64; i++) {
 			for(int j = 0; j < 64; j++) {
 				if(board[i][j].getColor() == Color.RED)
 					entrances++;
-				else if(board[i][j].getColor() == Color.GREEN)
-					exits++;
+				/*else if(board[i][j].getColor() == Color.GREEN)
+					exits++;*/
 			}
 		}
 		
 		if(entrances != 1)
 			return 2;
 		
-		if(exits < 1)
-			return 3;
+		/*if(exits < 1)
+			return 3;*/
 		
 		return 1;
 	}

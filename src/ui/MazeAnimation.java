@@ -98,7 +98,7 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 	
 	@Override
 	public void run() {
-		ArrayList<LinkedList<Point>> solutions;
+		ArrayList<LinkedList<Point>> solutions = null;
 		LinkedList<Point> footprint;
 		String selectedOption;
 		
@@ -132,16 +132,21 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 			return;
 		}
 		
-		msInterval = (long) (30000l / footprint.size());
-		if(msInterval > 250)
-			msInterval = 250;
+		msInterval = (long) (15000l / footprint.size());
+		
+		if (msInterval > 250) msInterval = 250;
+		else if (msInterval < 10) msInterval = 10;
 		
 		for(Point p : footprint) {
 			if(p != null) {
 				if(maze[p.x][p.y].getColor() == Color.BLUE)
 					maze[p.x][p.y].setColor(Color.GRAY);
-				else
+				else if (maze[p.x][p.y].getColor() == Color.WHITE)
 					maze[p.x][p.y].setColor(Color.BLUE);
+				else if (maze[p.x][p.y].getColor() == Color.GREEN)
+					maze[p.x][p.y].setColor(Color.CYAN);
+				else if (maze[p.x][p.y].getColor() == Color.CYAN)
+					maze[p.x][p.y].setColor(Color.DARK_GRAY);
 				maze[p.x][p.y].repaint();
 				try {
 					Thread.sleep(msInterval);
@@ -175,7 +180,7 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 			
 			LinkedList<Point> sol = solutions.get(selectedSolutionIndex);
 			
-			if(sol.size() > 0) {
+			if(sol != null && sol.size() > 0) {
 				for(Point p : sol) {
 					maze[p.x][p.y].setColor(Color.BLUE);
 					maze[p.x][p.y].repaint();
@@ -191,13 +196,12 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 			else {
 				JOptionPane.showMessageDialog(this, "Não foi possível executar a solução.", "Erro", JOptionPane.ERROR_MESSAGE);
 			}
-			dispose();
-			return;
+			//dispose();
 		}
-		else {
-			JOptionPane.showMessageDialog(this, "Não foi encontrada nenhuma solução para o labirinto.", "Erro", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+		else JOptionPane.showMessageDialog(this, "Não foi encontrada nenhuma solução para o labirinto.", "Erro", JOptionPane.ERROR_MESSAGE);
+		
+		dispose();
+		return;
 	}
 
 	@Override

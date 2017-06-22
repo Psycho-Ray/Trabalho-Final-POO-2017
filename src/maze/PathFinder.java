@@ -11,8 +11,8 @@ public class PathFinder {
 	
 	private boolean[][] used;
 	private byte[][] source;
-	
 	private Point[][] parent;
+	private StarCell[][] starMap;
 	
 	public PathFinder(byte source[][]) {
 		this.source = source;
@@ -24,40 +24,68 @@ public class PathFinder {
 		return footPrint;
 	}
 	
+	/*Util*/
+	private void extractFromParent(LinkedList<Point> path, Point[][] parent, Point now) {
+		if (parent[now.x][now.y] == null) return;
+		extractFromParent(path, parent, parent[now.x][now.y]);
+		path.add(now);
+	}
+	
 	/*DFS util*/
 	private void dfsRun(int x, int y) {
 		Point now = new Point(x, y);
 		
 		//Marca a posição atual como visitada e a adiciona ao caminho
 		used[x][y] = true;
-		auxPath.add(now);
 		
-		//Pinta a posição atual de vermelho
+		//Pinta a posição atual de azul
 		footPrint.add(now);
 		
 		//Caso saída encontrada
 		if (source[x][y] == 3) {
 			//Armazena uma cópia do caminho até a saída
-			paths.add(new LinkedList<Point>(auxPath));
+			paths.add(new LinkedList<Point>());
+			extractFromParent(paths.get(paths.size() - 1), parent, parent[now.x][now.y]);
 		}
 		
-		//Visita os nós vizinhos
-		if (x>0 && source[x-1][y] != 1 && !used[x-1][y]) dfsRun(x-1, y);	//Esquerda
-		if (y+1 < source[x].length && source[x][y+1] != 1 && !used[x][y+1]) dfsRun(x, y+1);	//Baixo
-		if (x+1 < source.length && source[x+1][y] != 1 && !used[x+1][y])	dfsRun(x+1, y);	//Direita
-		if (y>0 && source[x][y-1] != 1 && !used[x][y-1]) dfsRun(x, y-1);	//Cima
+		//Visita os nós vizinhos	
+		//Direita
+		if (y+1 < source[x].length && source[x][y+1] != 1 && !used[x][y+1]) {
+			parent[x][y+1] = now;
+			dfsRun(x, y+1);
+		}
 		
-		//Remove a posição atual da lista e pinta a posição atual de cinza
-		auxPath.remove();
+		//Baixo
+		if (x+1 < source.length && source[x+1][y] != 1 && !used[x+1][y]) {
+			parent[x+1][y] = now;
+			dfsRun(x+1, y);
+		}
+		
+		//Esquerda
+		if (y>0 && source[x][y-1] != 1 && !used[x][y-1]) {
+			parent[x][y-1] = now;
+			dfsRun(x, y-1);
+		}
+		//Cima
+		if (x>0 && source[x-1][y] != 1 && !used[x-1][y]) {
+			parent[x-1][y] = now;
+			dfsRun(x-1, y);
+		}
+		
+		//Pinta a posição atual de cinza
 		footPrint.add(now);
 	}
 	
 	/*DFS*/
 	public ArrayList<LinkedList<Point>> dfs(Point entrance, int nExits) {
 		//Inicialização
-		auxPath = new LinkedList<Point>();
 		footPrint = new LinkedList<Point>();
 		paths = new ArrayList<LinkedList<Point>>(nExits);
+		
+		//Inicialização
+		parent = new Point[source.length][];
+		for (int i=0; i<source.length; i++) parent[i] = new Point[source[i].length];
+		parent[entrance.x][entrance.y] = null;
 		
 		//Inicialização
 		used = new boolean[source.length][];
@@ -72,17 +100,9 @@ public class PathFinder {
 		return paths;
 	}
 	
-	
-	/*BFS util*/
-	private void extractFromParent(LinkedList<Point> path, Point[][] parent, Point now) {
-		if (parent[now.x][now.y] == null) return;
-		extractFromParent(path, parent, parent[now.x][now.y]);
-		path.add(now);
-	}
-	
 	/*BFS util*/
 	private void bfsMark(LinkedList<Point> queue, Point now, Point next) {
-		//Adiciona "next" à fila, marca-o como visitados, pinta-o de vermelho e define seu antecessor
+		//Adiciona "next" à fila, marca-o como visitados, pinta-o de azul e define seu antecessor
 		used[next.x][next.y] = true;
 		parent[next.x][next.y] = now;
 		queue.add(next);
@@ -102,6 +122,7 @@ public class PathFinder {
 		//Inicialização
 		parent = new Point[source.length][];
 		for (int i=0; i<source.length; i++) parent[i] = new Point[source[i].length];
+		parent[entrance.x][entrance.y] = null;
 		
 		//Queue
 		LinkedList<Point> queue = new LinkedList<Point>();
@@ -110,7 +131,7 @@ public class PathFinder {
 		used[entrance.x][entrance.y] = true;
 		queue.add(entrance);
 		
-		//Pinta a entrada de vermelho
+		//Pinta a entrada de azul
 		footPrint.add(entrance);
 		
 		//Enquanto existirem vértices a serem visitados...
@@ -125,31 +146,31 @@ public class PathFinder {
 			if (source[now.x][now.y] == 3) {
 				//Armazena o caminho até a saída
 				paths.add(new LinkedList<Point>());
-				extractFromParent(paths.get(paths.size() - 1), parent, now);
+				extractFromParent(paths.get(paths.size() - 1), parent, parent[now.x][now.y]);
 			}
 			
 			//Para cada posição adjacente...
-			//Esquerda
-			if (now.x > 0 && source[now.x - 1][now.y] != 1 && !used[now.x - 1][now.y]) {
-				next = new Point(now.x - 1, now.y);
-				bfsMark(queue, now, next);
-			}
-			
-			//Baixo
-			if (now.y < source.length && source[now.x][now.y + 1] != 1 && !used[now.x][now.y + 1]) {
+			//Direita
+			if (now.y + 1 < source[now.x].length && source[now.x][now.y + 1] != 1 && !used[now.x][now.y + 1]) {
 				next = new Point(now.x, now.y + 1);
 				bfsMark(queue, now, next);
 			}
 			
-			//Direita
-			if (now.x < source.length && source[now.x + 1][now.y] != 1 && !used[now.x + 1][now.y]) {
+			//Baixo
+			if (now.x + 1 < source.length && source[now.x + 1][now.y] != 1 && !used[now.x + 1][now.y]) {
 				next = new Point(now.x + 1, now.y);
 				bfsMark(queue, now, next);
 			}
 			
-			//Cima
+			//Esquerda
 			if (now.y > 0 && source[now.x][now.y - 1] != 1 && !used[now.x][now.y - 1]) {
 				next = new Point(now.x, now.y - 1);
+				bfsMark(queue, now, next);
+			}
+			
+			//Cima
+			if (now.x > 0 && source[now.x - 1][now.y] != 1 && !used[now.x - 1][now.y]) {
+				next = new Point(now.x - 1, now.y);
 				bfsMark(queue, now, next);
 			}
 		}
@@ -161,18 +182,28 @@ public class PathFinder {
 	}
 	
 	/* A* util*/
-	private void AStarMark(TreeSet<StarCell> set, StarCell now, StarCell next) {
-		//Adiciona "next" ao set, pinta-o de vermelho e define seu antecessor
-		parent[next.x][next.y] = now.point();
+	private void AStarMark(TreeSet<StarCell> set, StarCell now, StarCell next, Point exit) {
+		//Se o campo ainda não estiver pintando, pinta-o
+		if (next.t == Integer.MAX_VALUE) footPrint.add(next.point());
+		
+		//Atualiza "next", adiciona-o set, define seu antecessor
+		next.update(1, exit);
 		set.add(next);
-		footPrint.add(next.point());
+		parent[next.x][next.y] = now.point();
 	}
 	
 	/* A* */
-	public LinkedList<Point> AStar(byte[][] source, Point entrance, Point exit) {
+	public LinkedList<Point> AStar(byte[][] source, LinkedList<Point>footPrint, Point entrance, Point exit) {
 		//Inicialização
-		footPrint = new LinkedList<Point>();
+		this.footPrint = footPrint;
 		auxPath = new LinkedList<Point>();
+		
+		//Inicialização
+		starMap = new StarCell[source.length][];
+		for (int i=0; i<source.length; i++) {
+			starMap[i] = new StarCell[source[i].length];
+			for (int j=0; j<source[i].length; j++) starMap[i][j] = new StarCell(i,j);
+		}
 		
 		//Inicialização
 		used = new boolean[source.length][];
@@ -181,57 +212,63 @@ public class PathFinder {
 		//Inicialização
 		parent = new Point[source.length][];
 		for (int i=0; i<source.length; i++) parent[i] = new Point[source[i].length];
+		parent[entrance.x][entrance.y] = null;
 		
 		//Set Ordenado implementado com Rubro-Negra para a lista de nós e matriz de adjacência
 		TreeSet<StarCell> set = new TreeSet<StarCell>();
 		
 		//Adiciona a entrada ao set
-		set.add(new StarCell(entrance, 0, exit));
+		//starMap[entrance.x][entrance.y].t = 0;
+		set.add(starMap[entrance.x][entrance.y]);
 		
-		//Pinta a entrada de Vermelho
+		//Pinta-a de azul
 		footPrint.add(entrance);
 		
 		while (!set.isEmpty()) {
 			//Salva o nó atual e o tira do set
 			StarCell next = null, now = set.pollFirst();
 			
-			//Marca-o como visitado e pinta-o de cinza
+			//Marca-o como visitado
 			used[now.x][now.y] = true;
+			
+			//Pinta-o de cinza
 			footPrint.add(now.point());
 			
 			///Caso saída encontrada
-			if (source[now.x][now.y] == 3) {
+			if (now.point().equals(exit)) {
 				//Armazena o caminho até a saída
-				extractFromParent(auxPath, parent, now.point());
+				extractFromParent(auxPath, parent, parent[now.x][now.y]);
 				
 				//Exibe o caminho encontrado
 				footPrint.add(null);
+				
+				//Fim do algoritmo
 				return auxPath;
 			}
 			
 			//Para cada posição adjacente...
-			//Esquerda
-			if (now.x > 0 && source[now.x - 1][now.y] != 1 && !used[now.x - 1][now.y]) {
-				next = new StarCell(now.x - 1, now.y, now.d + 1, exit);
-				AStarMark(set, now, next);
+			//Direita
+			if (now.y + 1 < source.length && source[now.x][now.y + 1] != 1 && !used[now.x][now.y + 1]) {
+				next = starMap[now.x][now.y + 1];
+				if (next.nextT(1, exit) < next.t) AStarMark(set, now, next, exit);
 			}
 			
 			//Baixo
-			if (now.y < source.length && source[now.x][now.y + 1] != 1 && !used[now.x][now.y + 1]) {
-				next = new StarCell(now.x, now.y + 1, now.d+1, exit);
-				AStarMark(set, now, next);
+			if (now.x + 1 < source[now.y].length && source[now.x + 1][now.y] != 1 && !used[now.x + 1][now.y]) {
+				next = starMap[now.x + 1][now.y];
+				if (next.nextT(1, exit) < next.t) AStarMark(set, now, next, exit);
 			}
 			
-			//Direita
-			if (now.x < source.length && source[now.x + 1][now.y] != 1 && !used[now.x + 1][now.y]) {
-				next = new StarCell(now.x + 1, now.y, now.d+1, exit);
-				AStarMark(set, now, next);
+			//Esquerda
+			if (now.y > 0 && source[now.x][now.y - 1] != 1 && !used[now.x][now.y - 1]) {
+				next = starMap[now.x][now.y - 1];
+				if (next.nextT(1, exit) < next.t) AStarMark(set, now, next, exit);
 			}
 			
 			//Cima
-			if (now.y > 0 && source[now.x][now.y - 1] != 1 && !used[now.x][now.y - 1]) {
-				next = new StarCell(now.x, now.y - 1, now.d+1, exit);
-				AStarMark(set, now, next);
+			if (now.x > 0 && source[now.x - 1][now.y] != 1 && !used[now.x - 1][now.y]) {
+				next = starMap[now.x - 1][now.y];
+				if (next.nextT(1, exit) < next.t) AStarMark(set, now, next, exit);
 			}
 		}
 		
