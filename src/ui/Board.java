@@ -269,7 +269,7 @@ public class Board extends JPanel implements Runnable {
 			return;
 		}
 		
-			msInterval = 100l;
+			msInterval = (15000l / footprint.size());
 		
 		for(Point p : footprint) {
 			if(p != null) {
@@ -312,6 +312,7 @@ public class Board extends JPanel implements Runnable {
 			LinkedList<Point> sol = solutions.get(selectedSolutionIndex);
 			
 			if(sol.size() > 0) {
+				msInterval = (5000l / sol.size());
 				for(Point p : sol) {
 					board[p.x][p.y].setColor(Color.BLUE);
 					board[p.x][p.y].repaint();
