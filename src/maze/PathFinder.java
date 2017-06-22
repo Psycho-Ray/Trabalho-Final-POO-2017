@@ -48,7 +48,7 @@ public class PathFinder {
 		if (y>0 && source[x][y-1] != 1 && !used[x][y-1]) dfsRun(x, y-1);	//Cima
 		
 		//Remove a posi��o atual da lista e pinta a posi��o atual de cinza
-		auxPath.remove();
+		auxPath.remove(now);
 		footPrint.add(now);
 	}
 	
@@ -111,7 +111,7 @@ public class PathFinder {
 		queue.add(entrance);
 		
 		//Pinta a entrada de vermelho
-		footPrint.add(entrance);
+		//footPrint.add(entrance);
 		
 		//Enquanto existirem v�rtices a serem visitados...
 		while (!queue.isEmpty()) {
@@ -130,25 +130,25 @@ public class PathFinder {
 			
 			//Para cada posi��o adjacente...
 			//Esquerda
-			if (now.x > 0 && source[now.x - 1][now.y] != 1 && !used[now.x - 1][now.y]) {
+			if (now.x - 1 >= 0 && source[now.x - 1][now.y] != 1 && !used[now.x - 1][now.y]) {
 				next = new Point(now.x - 1, now.y);
 				bfsMark(queue, now, next);
 			}
 			
 			//Baixo
-			if (now.y < source.length && source[now.x][now.y + 1] != 1 && !used[now.x][now.y + 1]) {
+			if (now.y + 1 < source.length && source[now.x][now.y + 1] != 1 && !used[now.x][now.y + 1]) {
 				next = new Point(now.x, now.y + 1);
 				bfsMark(queue, now, next);
 			}
 			
 			//Direita
-			if (now.x < source.length && source[now.x + 1][now.y] != 1 && !used[now.x + 1][now.y]) {
+			if (now.x + 1 < source.length && source[now.x + 1][now.y] != 1 && !used[now.x + 1][now.y]) {
 				next = new Point(now.x + 1, now.y);
 				bfsMark(queue, now, next);
 			}
 			
 			//Cima
-			if (now.y > 0 && source[now.x][now.y - 1] != 1 && !used[now.x][now.y - 1]) {
+			if (now.y - 1 >= 0 && source[now.x][now.y - 1] != 1 && !used[now.x][now.y - 1]) {
 				next = new Point(now.x, now.y - 1);
 				bfsMark(queue, now, next);
 			}

@@ -270,6 +270,8 @@ public class Board extends JPanel implements Runnable {
 		}
 		
 			msInterval = (15000l / footprint.size());
+			if(msInterval > 250l)
+				msInterval = 250l;
 		
 		for(Point p : footprint) {
 			if(p != null) {
@@ -307,21 +309,26 @@ public class Board extends JPanel implements Runnable {
 				optionsStrings,
 				optionsStrings[0]
 				);
-			selectedSolutionIndex = Integer.parseInt(result) - 1;
+			try {
+				selectedSolutionIndex = Integer.parseInt(result) - 1;
+			} catch(NumberFormatException nfe) {
+				return;
+			}
 			
 			LinkedList<Point> sol = solutions.get(selectedSolutionIndex);
 			
 			if(sol.size() > 0) {
 				msInterval = (5000l / sol.size());
+				if(msInterval > 250l)
+					msInterval = 250l;
+				
 				for(Point p : sol) {
 					board[p.x][p.y].setColor(Color.BLUE);
 					board[p.x][p.y].repaint();
 					Toolkit.getDefaultToolkit().sync();
 					try {
 						Thread.sleep(msInterval);
-					} catch(InterruptedException ie) {
-						System.out.println("Sleep exception");
-					}
+					} catch(InterruptedException ie) {}
 				}
 				
 				JOptionPane.showMessageDialog(this, "A execução foi concluída.", "Fim", JOptionPane.INFORMATION_MESSAGE);
