@@ -5,7 +5,8 @@ import ui.MainFrame;
 
 /**Classe principal da aplicação.
  * @author Igor Trevelin
- *
+ * @author Alex Sander
+ * @author Rodrigo Anes
  */
 public class ProgMain {
 	/**Função main da aplicação, onde se inicia a execução do programa.

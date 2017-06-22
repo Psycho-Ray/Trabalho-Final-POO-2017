@@ -15,7 +15,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 /**Representa o menu com as seguinte opções: Carregar labirinto de arquivo,
  * salvar labirinto em arquivo, limpar o quadro, 
  * @author Igor Trevelin
- *
+ * @author Alex Sander
+ * @author Rodrigo Anes
  */
 @SuppressWarnings("serial")
 public class OptionsPanel extends JPanel {

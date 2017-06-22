@@ -17,7 +17,8 @@ import java.util.Iterator;
 
 /** Representa o quadro onde o usuário desenha o labirinto.
  * @author Igor Trevelin
- *
+ * @author Alex Sander
+ * @author Rodrigo Anes
  */
 @SuppressWarnings("serial")
 public class Board extends JPanel {

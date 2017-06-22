@@ -15,7 +15,8 @@ import javax.swing.JPanel;
 
 /**Representa a janela principal da aplicação.
  * @author Igor Trevelin
- *
+ * @author Alex Sander
+ * @author Rodrigo Anes
  */
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
