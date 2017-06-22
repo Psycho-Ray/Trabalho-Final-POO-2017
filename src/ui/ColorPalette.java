@@ -14,7 +14,8 @@ import javax.swing.JPanel;
 
 /**Representa a paleta de cores.
  * @author Igor Trevelin
- *
+ * @author Alex Sander
+ * @author Rodrigo Anes
  */
 @SuppressWarnings("serial")
 public class ColorPalette extends JPanel {
@@ -71,7 +72,8 @@ public class ColorPalette extends JPanel {
 
 /**Representa um seletor para uma cor que pode ser selecionada na paleta de cores.
  * @author Igor Trevelin
- *
+ * @author Alex Sander
+ * @author Rodrigo Anes
  */
 @SuppressWarnings("serial")
 class ColorSelector extends JComponent implements MouseListener {

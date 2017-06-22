@@ -10,7 +10,8 @@ import javax.swing.JComponent;
 
 /**Representa um quadrado 10x10 px que será contido pelo quadro de desenho.
  * @author Igor Trevelin
- *
+ * @author Alex Sander
+ * @author Rodrigo Anes
  */
 @SuppressWarnings("serial")
 public class BoardSquare extends JComponent implements MouseListener {

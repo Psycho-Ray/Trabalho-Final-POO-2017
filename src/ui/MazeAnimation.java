@@ -21,7 +21,8 @@ import maze.Maze;
 
 /**Representa a janela onde será executada a animação do algoritmo de resolução do labirinto.
  * @author Igor Trevelin
- *
+ * @author Alex Sander
+ * @author Rodrigo Anes
  */
 @SuppressWarnings("serial")
 public class MazeAnimation extends JFrame implements Runnable, KeyListener {
@@ -72,24 +73,43 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 		canvas.setBackground(MainFrame.DEFAULT_BACKGROUND_COLOR);
 		add(canvas);
 		setSize(canvas.getPreferredSize());
+		
 		setVisible(true);
 		
 		runner = new Thread(this);
 		runner.start();
 	}
 	
+	public void reset() {
+		for(int i = 0; i < 64; i++) {
+			for(int j = 0; j < 64; j++) {
+				if(mazeByte[i][j] == 0)
+					maze[i][j].setColor(Color.WHITE);
+				else if(mazeByte[i][j] == 1)
+					maze[i][j].setColor(Color.BLACK);
+				else if(mazeByte[i][j] == 2)
+					maze[i][j].setColor(Color.RED);
+				else if(mazeByte[i][j] == 3)
+					maze[i][j].setColor(Color.GREEN);
+			}
+		}
+		canvas.repaint();
+	}
+	
 	@Override
 	public void run() {
 		ArrayList<LinkedList<Point>> solutions;
 		LinkedList<Point> footprint;
+		String selectedOption;
 		
 		if(mazeObj != null) {
 			String[] options = {
 				"Busca em largura",
-				"Busca em profundidade"
+				"Busca em profundidade",
+				"A*"
 			};
 			
-			String selectedOption = (String) JOptionPane.showInputDialog(this,
+			selectedOption = (String) JOptionPane.showInputDialog(this,
 				"Selecione o algoritmo a ser utilizado:",
 				"Algoritmo",
 				JOptionPane.QUESTION_MESSAGE,
@@ -102,8 +122,8 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 				solutions = mazeObj.bfs();
 			else if(selectedOption == "Busca em profundidade")
 				solutions = mazeObj.dfs();
-			else
-				solutions = mazeObj.dfs();
+			else if(selectedOption == "A*")
+				solutions = mazeObj.AStar();
 			footprint = mazeObj.showFootPrint();
 		}
 		else {
@@ -127,21 +147,14 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 					Thread.sleep(msInterval);
 				} catch(InterruptedException ie) {}
 			}
-		}
-		
-		for(int i = 0; i < 64; i++) {
-			for(int j = 0; j < 64; j++) {
-				if(mazeByte[i][j] == 0)
-					maze[i][j].setColor(Color.WHITE);
-				else if(mazeByte[i][j] == 1)
-					maze[i][j].setColor(Color.BLACK);
-				else if(mazeByte[i][j] == 2)
-					maze[i][j].setColor(Color.RED);
-				else if(mazeByte[i][j] == 3)
-					maze[i][j].setColor(Color.GREEN);
+			else {
+				if(selectedOption == "A*") {
+					reset();
+				}
 			}
 		}
-		canvas.repaint();
+		
+		reset();
 		
 		if(solutions.size() > 0) {
 			Vector<String> options = new Vector<String>();
@@ -200,7 +213,8 @@ public class MazeAnimation extends JFrame implements Runnable, KeyListener {
 
 /**Representa um quadrado da animação do labirinto.
  * @author Igor Trevelin
- *
+ * @author Alex Sander
+ * @author Rodrigo Anes
  */
 @SuppressWarnings("serial")
 class AnimationSquare extends JComponent {
